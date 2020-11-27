@@ -19,14 +19,13 @@ GDAL - Geospatial Data Abstraction Library
 
 GDAL is an open source library and set of tools for converting and manipulating spatial data. While GDAL itself deals with raster data – GeoTIFFs, ECW, DEMs and the like – its sister project, OGR, deals with vector data formats such as ESRI Shapefiles, MapInfo, KML, or SQL Server geography/geometry data. The OGR2OGR utility is the specific GDAL/OGR component for transforming data between these different vector formats. The scope of these recipes is to work with MSSQL Server, but other databases like Postgres, MySQL and Oracle Spatial are supported. To avoiding running to issues it's strongly recommended to wrap parameter values with double quotes. 
 
-For clarity the recipes have been placed on multiple lines, but need to be passed in as one liners. 
-The easiest way to install GDAL is with Anaconda by running: 
+For clarity these recipes have been placed on multiple lines, but need to be passed in as one liners. The easiest way to install GDAL is with Anaconda by running: 
 ```
 $conda install -c conda-forge gdal
 ```
 ogr2ogr.exe default install location: C:\OSGeo4W64\bin and GDAL spatial reference data housed in: C:\OSGeo4W64\share\gdal
 
-## Reproject Syntax:
+### Reproject Syntax:
 ```
 ogr2ogr
 -f "MSSQLSpatial" **what format are we writing the data to?
@@ -41,7 +40,8 @@ ogr2ogr
 -nln "DEST" ** destination table is called 'DEST'
 ```
 
-## Reprojecting Ex:
+### Reprojecting Ex:
+
 ```
 ogr2ogr -f "MSSQLSpatial"
 "MSSQL:server=MyMSSQLServer; database=DEV_Warehouse; trusted_connection=yes"
@@ -61,7 +61,8 @@ may or may not live on the system, ogr2ogr has curl installed, and will pull the
 from spatialreference.org
 ```
 
-## Importing ESRI Shapefiles Into SQL Server:
+### Importing ESRI Shapefiles Into SQL Server:
+
 ```
 ogr2ogr
 -f "MSSQLSpatial"
@@ -75,8 +76,8 @@ ogr2ogr
 --config MSSQLSPATIAL_USE_BCP  **tells GDAL to use native SQL SERVER Native Client driver for Bulk Copy, useful for loading large data sets.  
 ```
 
+### Exporting from SQL Server to ESRI Shapefile:
 
-## Exporting from SQL Server to ESRI Shapefile:
 ```
 ogr2ogr 
 -f "ESRI Shapefile" **export as ESRI Shapefile
@@ -84,7 +85,8 @@ ogr2ogr
 "MSSQL:server=localhost\sqlexpress;database=tempdb;tables=OGRExportTestTable;trusted_connection=yes;" **table source
 ```
 
-## Import Shapefile into SQL Server:
+### Import Shapefile into SQL Server:
+
 ```
 ogr2ogr -f "MSSQLSpatial"
 "MSSQL:server=(your server name here);database=(database name on server to publish shapefile to);trusted_connection=yes" 
@@ -106,7 +108,8 @@ ogr2ogr
 -a_srs "EPSG:2199"
 ```
 
-## Import Non-spatial Data: Although OGR was designed for working with spatial data, it can just as easily work with Dbase files and CSV files.
+### Import Non-spatial Data: Although OGR was designed for working with spatial data, it can just as easily work with Dbase files and CSV files.
+
 ```
 ogr2ogr
 -f "MSSQLSpatial"
