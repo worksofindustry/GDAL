@@ -1,3 +1,5 @@
+![alt text](https://gdal.org/_static/gdalicon.png?raw=true)
+
 GDAL - Geospatial Data Abstraction Library
 ====
 
