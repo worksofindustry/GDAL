@@ -21,16 +21,13 @@ GDAL is an open source library and set of tools for converting and manipulating 
 
 For clarity the recipes have been placed on multiple lines, but need to be passed in as one liners. 
 The easiest way to install GDAL is with Anaconda by running: 
-'''
+```
 $conda install -c conda-forge gdal
-'''
+```
+ogr2ogr.exe default install location: C:\OSGeo4W64\bin and GDAL spatial reference data housed in: C:\OSGeo4W64\share\gdal
 
-
-ogr2ogr.exe default install location: C:\OSGeo4W64\bin
-GDAL spatial reference data housed in: C:\OSGeo4W64\share\gdal
-
-##Reproject Syntax:
-'''
+## Reproject Syntax:
+```
 ogr2ogr
 -f "MSSQLSpatial" **what format are we writing the data to?
 "MSSQL:server=MyServer;database=spatial;trusted_connection=yes;"  **where is the destination database? To/From Params Are Positional
@@ -42,14 +39,14 @@ ogr2ogr
 -lco "GEOM_TYPE=geography" ** destination field is geography, DEFAULT is geography if this layer output option is not provided
 -lco "GEOM_NAME=LocationGeography" destination field is called 'LocationGeography'
 -nln "DEST" ** destination table is called 'DEST'
-'''
+```
 
-##ex. Reprojecting 2
-'''
+## Reprojecting Ex:
+```
 ogr2ogr -f "MSSQLSpatial"
 "MSSQL:server=MyMSSQLServer; database=DEV_Warehouse; trusted_connection=yes"
 "MSSQL:server=MyMSSQLServer; database=DEV_Warehouse; trusted_connection=yes"
--sql "SELECT [Address], shape as shape FROM DEV_Warehouse.dbo.temp_preinspects"
+-sql "SELECT [Address], shape as shape FROM DEV_Warehouse.dbo.temp_Addresses"
 -overwrite **your options are overwrite, update and append
 -s_srs "http://spatialreference.org/ref/epsg/4326/"
 -t_srs "http://spatialreference.org/ref/epsg/2285/"
@@ -62,10 +59,10 @@ ogr2ogr -f "MSSQLSpatial"
 --config GDAL_HTTP_UNSAFESSL YES **optional config options rather than pulling EPSG definitions that
 may or may not live on the system, ogr2ogr has curl installed, and will pull the definitions
 from spatialreference.org
-'''
+```
 
-##Import ESRI Shapefiles Into SQL Server:
-'''
+## Importing ESRI Shapefiles Into SQL Server:
+```
 ogr2ogr
 -f "MSSQLSpatial"
 "MSSQL:server=localhost\SQL2012Express;database=Test_DB;trusted_connection=yes;"
@@ -76,44 +73,44 @@ ogr2ogr
 -nln "CaliforniaZCTA"
 -progress
 --config MSSQLSPATIAL_USE_BCP  **tells GDAL to use native SQL SERVER Native Client driver for Bulk Copy, useful for loading large data sets.  
-'''
+```
 
 
-##Exporting from SQL Server to ESRI Shapefile:
-'''
+## Exporting from SQL Server to ESRI Shapefile:
+```
 ogr2ogr 
 -f "ESRI Shapefile" **export as ESRI Shapefile
 "C:\temp\sqlexport.shp" **name of new shapefile
 "MSSQL:server=localhost\sqlexpress;database=tempdb;tables=OGRExportTestTable;trusted_connection=yes;" **table source
-'''
+```
 
-##Import Shapefile into SQL Server:
-'''
+## Import Shapefile into SQL Server:
+```
 ogr2ogr -f "MSSQLSpatial"
 "MSSQL:server=(your server name here);database=(database name on server to publish shapefile to);trusted_connection=yes" 
 "(directory and actual name of shapefile with .shp extension)"
 -a_srs "(the ESPG projection code of the shapefile)"
 -lco "PRECISION=NO"
 -progress **optional paramer, shows progress on import
-'''
+```
 
-SQL Server will allow you to mix different types of geometry (Points, LineStrings, Polygons) within a single column of geometry or geography data. An ESRI shapefile, in contrast, can only contain a single homogenous type of geometry. To get around this, you'll need to filter by spatial type and export individually. Ex.
-'''
+SQL Server will allow you to mix different types of geometry (Points, LineStrings, Polygons) within a single column of geometry or geography data. An ESRI shapefile, in contrast, can only contain a single homogenous type of geometry. To get around this, you'll need to filter by spatial type and export individually. For example:
+```
 ogr2ogr
 -f "ESRI Shapefile"
 "C:\temp\sqlexport_linestring.shp" 
 "MSSQL:server=localhost\sqlexpress;database=tempdb;trusted_connection=yes;" 
--sql "SELECT shapeid, shapename, shapegeom.STAsBinary(), bufferedshape.ToString(), bufferedshapearea AS area  FROM OGRExportTestTable WHERE shapegeom.STGeometryType() = 'LINESTRING'" 
+-sql "SELECT shapeid, shapename, shapegeom.STAsBinary(), bufferedshape.ToString(), bufferedshapearea AS area FROM OGRExportTestTable WHERE shapegeom.STGeometryType() = 'LINESTRING'" 
 -overwrite 
 -lco "SHPT=ARC" 
 -a_srs "EPSG:2199"
-'''
+```
 
-##Import Non-spatial Data: Although OGR was designed for working with spatial data, it can just as easily work with Dbase files and CSV files.
-'''
+## Import Non-spatial Data: Although OGR was designed for working with spatial data, it can just as easily work with Dbase files and CSV files.
+```
 ogr2ogr
 -f "MSSQLSpatial"
 "MSSQL:server=localhost\SQL2012Express;database=Test_DB;trusted_connection=yes;"
 somedata.csv
 -nln "sometable"
-'''
+```
